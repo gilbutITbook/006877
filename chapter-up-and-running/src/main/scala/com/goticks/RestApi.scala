@@ -68,8 +68,6 @@ trait RestRoutes extends BoxOfficeApi
       }
     }
 
-
-
   def ticketsRoute =
     pathPrefix("events" / Segment / "tickets") { event =>
       post {
@@ -86,7 +84,6 @@ trait RestRoutes extends BoxOfficeApi
     }
 
 }
-
 
 trait BoxOfficeApi {
   import BoxOffice._
