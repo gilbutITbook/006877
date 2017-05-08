@@ -1,6 +1,6 @@
 package aia.channels
 
-// start with multi-jvm:test-only aia.channels.ReliableProxySampleSpec
+// multi-jvm:test-only aia.channels.ReliableProxySampleSpec 로 시작할것
 
 import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
 import akka.testkit.ImplicitSender
@@ -8,7 +8,7 @@ import akka.actor.{Props, Actor}
 
 
 /**
- * Hooks up MultiNodeSpec with ScalaTest
+ *스칼라테스트의 MultiNodeSpec 사용
  */
 
 import akka.remote.testkit.MultiNodeSpecCallbacks
@@ -36,14 +36,10 @@ object ReliableProxySampleConfig extends MultiNodeConfig {
 class ReliableProxySampleSpecMultiJvmNode1 extends ReliableProxySample
 class ReliableProxySampleSpecMultiJvmNode2 extends ReliableProxySample
 
-
-
-
 import akka.remote.transport.ThrottlerTransportAdapter.Direction
 import scala.concurrent.duration._
 import concurrent.Await
 import akka.contrib.pattern.ReliableProxy
-
 
 class ReliableProxySample
   extends MultiNodeSpec(ReliableProxySampleConfig)

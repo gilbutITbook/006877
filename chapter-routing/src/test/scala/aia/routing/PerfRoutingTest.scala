@@ -119,15 +119,15 @@ class PerfRoutingTest
       routees.get(0).send(PoisonPill, endProbe.ref)
 
       termProbe.watch(router)
-      //// router isn't terminated due to the use of ActorSelectionRoutee
+      //// ActorSelectionRoutee을 사용하기 때문에 라우터가 종료되지 않는다
       termProbe.expectNoMsg
       termProbe.unwatch(router)
 
       val future2 = router.ask(GetRoutees)(1 second)
       val routeesMsg2 = Await.result(future2, 1.second).asInstanceOf[Routees]
       routeesMsg2.getRoutees.size must be (2)
-      import collection.JavaConversions._
-      for(routee <- routeesMsg2.getRoutees) {
+      import collection.JavaConverters._
+      for(routee <- routeesMsg2.getRoutees.asScala) {
         routees.get(0).send(msg, endProbe.ref)
       }
       val procMsg1 = endProbe.expectMsgType[PerformanceRoutingMessage](1 second)

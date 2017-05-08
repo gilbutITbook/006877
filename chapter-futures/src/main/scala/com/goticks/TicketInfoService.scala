@@ -3,20 +3,19 @@ package com.goticks
 import scala.concurrent.Future
 import com.github.nscala_time.time.Imports._
 import scala.util.control.NonFatal
-//what about timeout? or at least termination condition?
-// future -> actors scheduling time
+// 타임아웃은 어떻게 처리할까? 또는, 종료시켜야 하는 최소한의 조건은 무엇일까?
 trait TicketInfoService extends WebServiceCalls {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   type Recovery[T] = PartialFunction[Throwable,T]
 
-  // recover with None
+  // None으로 복구하기
   def withNone[T]: Recovery[Option[T]] = { case NonFatal(e) => None }
 
-  // recover with empty sequence
+  // 빈 시퀀스로 복구하기
   def withEmptySeq[T]: Recovery[Seq[T]] = { case NonFatal(e) => Seq() }
 
-  // recover with the ticketInfo that was built in the previous step
+  // 이전 단계에서 만들었던 ticketInfo로 복구하기
   def withPrevious(previous: TicketInfo): Recovery[TicketInfo] = {
     case NonFatal(e) => previous
   }
@@ -38,9 +37,9 @@ trait TicketInfoService extends WebServiceCalls {
         getSuggestions(event)
       }.getOrElse(Future.successful(Seq()))
 
-      val ticketInfos = Seq(infoWithTravelAdvice, infoWithWeather)
+      val ticketInfos = List(infoWithTravelAdvice, infoWithWeather)
 
-      val infoWithTravelAndWeather: Future[TicketInfo] = Future.fold(ticketInfos)(info) { (acc, elem) =>
+      val infoWithTravelAndWeather: Future[TicketInfo] = Future.foldLeft(ticketInfos)(info) { (acc, elem) =>
         val (travelAdvice, weather) = (elem.travelAdvice, elem.weather)
 
         acc.copy(travelAdvice = travelAdvice.orElse(acc.travelAdvice),

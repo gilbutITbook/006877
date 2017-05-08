@@ -9,8 +9,8 @@
     </appender>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- encoders are assigned the type
-     ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <!-- 인코더의 디폴트 타입은  
+     ch.qos.logback.classic.encoder.PatternLayoutEncoder 이다 -->
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %m%n</pattern>
         </encoder>

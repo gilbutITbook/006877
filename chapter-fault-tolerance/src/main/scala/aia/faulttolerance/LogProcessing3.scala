@@ -12,7 +12,7 @@ package dbstrategy3 {
   object LogProcessingApp extends App {
     val sources = Vector("file:///source1/", "file:///source2/")
     val system = ActorSystem("logprocessing")
-    // create the props and dependencies
+    // Props와 의존관계를 정의한다 
     val databaseUrl = "http://mydatabase"
     
     val writerProps = Props(new DbWriter(databaseUrl))
@@ -137,10 +137,10 @@ package dbstrategy3 {
 
   class DbCon(url: String) {
     /**
-     * Writes a map to a database.
-     * @param map the map to write to the database.
-     * @throws DbBrokenConnectionException when the connection is broken. It might be back later
-     * @throws DbNodeDownException when the database Node has been removed from the database cluster. It will never work again.
+     * map을 데이터베이스에 기록한다.
+     * @param map 데이터베이스에 기록할 맵이다.
+     * @throws DbBrokenConnectionException 연결이 깨진 경우 발생한다. 나중에 연결이 돌아올 수도 있다.
+     * @throws DbNodeDownException 데이터베이스 노드가 데이터베이스 클러스터에서 제거된 경우 발생한다. 결코 노드가 다시 정상적동하게 되는 일은 없다.
      */
     def write(map: Map[Symbol, Any]):Unit = {
       //
@@ -165,10 +165,10 @@ package dbstrategy3 {
 
   trait LogParsing {
     import LogProcessingProtocol._
-    // Parses log files. creates line objects from the lines in the log file.
-    // If the file is corrupt a CorruptedFileException is thrown
+    // 로그 파일을 파싱한다. 로그 파일의 각 줄에서 Line 객체를 만든다.
+    // 파일이 잘못된 경우에는 CorruptedFileException 예외를 던진다.
     def parse(file: File): Vector[Line] = {
-      // implement parser here, now just return dummy value
+      // 파서를 여기서 정의한다. 지금은 일단 더미 값을 반환한다.
       Vector.empty[Line]
     }
   }
@@ -184,9 +184,9 @@ package dbstrategy3 {
 
 
   object LogProcessingProtocol {
-    // represents a new log file
+    // 새로운 로그 파일을 표현한다.
     case class LogFile(file: File)
-    // A line in the log file parsed by the LogProcessor Actor
+    // LogProcessor가 파싱한 로그 파일의 한 줄을 표현한다.
     case class Line(time: Long, message: String, messageType: String)
   }
 

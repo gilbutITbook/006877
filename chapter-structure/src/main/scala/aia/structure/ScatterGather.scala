@@ -98,7 +98,7 @@ class Aggregator(timeout: FiniteDuration, pipe: ActorRef)
             rcvMsg.creationTime.orElse(alreadyRcvMsg.creationTime),
             rcvMsg.speed.orElse(alreadyRcvMsg.speed))
           pipe ! newCombinedMsg
-          //cleanup message
+          // 메시지를 정리한다
           messages -= alreadyRcvMsg
         }
         case None => {
@@ -116,7 +116,7 @@ class Aggregator(timeout: FiniteDuration, pipe: ActorRef)
           pipe ! alreadyRcvMsg
           messages -= alreadyRcvMsg
         }
-        case None => //message is already processed
+        case None => // 메시지를 이미 처리했다
       }
     }
     case ex: Exception => throw ex

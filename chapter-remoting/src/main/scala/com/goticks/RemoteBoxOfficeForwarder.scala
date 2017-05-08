@@ -31,6 +31,7 @@ class RemoteBoxOfficeForwarder(implicit timeout: Timeout)
   def deploying: Receive = {
 
     case ReceiveTimeout =>
+	  log.info("ReceiveTimeout")
       deployAndWatch()
 
     case msg: Any =>
@@ -39,7 +40,7 @@ class RemoteBoxOfficeForwarder(implicit timeout: Timeout)
 
   def maybeActive(actor: ActorRef): Receive = {
     case Terminated(actorRef) =>
-      log.info("Actor $actorRef terminated.")
+      log.info(s"Actor $actorRef terminated.")
       log.info("switching to deploying state")
       context.become(deploying)
       context.setReceiveTimeout(3 seconds)

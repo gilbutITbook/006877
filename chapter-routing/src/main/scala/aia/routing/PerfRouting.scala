@@ -40,7 +40,7 @@ class GetLicenseCreator(nrActors: Int, nextStep: ActorRef) extends Actor {
 }
 
 class GetLicenseCreator2(nrActors: Int, nextStep: ActorRef) extends Actor {
-  //restart children
+  // 자식을 재시작한다
   override def preStart(): Unit = {
     super.preStart()
     (0 until  nrActors).map(nr => {
@@ -72,7 +72,7 @@ case class PreferredSize(size: Int)
 class WrongDynamicRouteeSizer(nrActors: Int, props: Props, router: ActorRef) extends Actor {
   var nrChildren = nrActors
 
-  //restart children
+  // 자식을 재시작한다
   override def preStart(): Unit = {
     super.preStart()
     (0 until  nrChildren).map(nr => createRoutee())
@@ -86,7 +86,7 @@ class WrongDynamicRouteeSizer(nrActors: Int, props: Props, router: ActorRef) ext
   def receive = {
     case PreferredSize(size) => {
       if (size < nrChildren) {
-        //remove
+        // 삭제하기
         println("Delete %d children".format(nrChildren - size))
         context.children.take(nrChildren - size).foreach(ref => {
           println("delete: "+ ref)
@@ -99,8 +99,8 @@ class WrongDynamicRouteeSizer(nrActors: Int, props: Props, router: ActorRef) ext
       nrChildren = size
     }
     case routees: Routees => {
-      import collection.JavaConversions._
-      val active = routees.getRoutees.map{
+      import collection.JavaConverters._
+      val active = routees.getRoutees.asScala.map{
         case x: ActorRefRoutee => x.ref.path.toString
         case x: ActorSelectionRoutee => x.selection.pathString
       }
@@ -124,7 +124,7 @@ class DynamicRouteeSizer(nrActors: Int,
   var nrChildren = nrActors
   var childInstanceNr = 0
 
-  //restart children
+  // 자식을 재시작한다
   override def preStart(): Unit = {
     super.preStart()
     (0 until  nrChildren).map(nr => createRoutee())
@@ -141,7 +141,7 @@ class DynamicRouteeSizer(nrActors: Int,
   def receive = {
     case PreferredSize(size) => {
       if (size < nrChildren) {
-        //remove
+        // 삭제하기
         context.children.take(nrChildren - size).foreach(ref => {
           val selection = context.actorSelection(ref.path)
           router ! RemoveRoutee(ActorSelectionRoutee(selection))
@@ -153,23 +153,23 @@ class DynamicRouteeSizer(nrActors: Int,
       nrChildren = size
     }
     case routees: Routees => {
-      //translate Routees into a actorPath
-      import collection.JavaConversions._
-      val active = routees.getRoutees.map{
+      // 라우티를 액터 경로로 변환한다
+      import collection.JavaConverters._
+      val active = routees.getRoutees.asScala.map{
         case x: ActorRefRoutee => x.ref.path.toString
         case x: ActorSelectionRoutee => x.selection.pathString
       }
-      //process the routee list
+      // 라우티 리스트를 처리한다
       for(routee <- context.children) {
         val index = active.indexOf(routee.path.toStringWithoutAddress)
         if (index >= 0) {
           active.remove(index)
         } else {
-          //Child isn't used anymore by router
+          // 자식 액터를 더이상 라우터가 사용하지 않는다
           routee ! PoisonPill
         }
       }
-      //active contains the terminated routees
+      // active에는 종료된 라우티들이 들어있다
       for (terminated <- active) {
         val name = terminated.substring(terminated.lastIndexOf("/")+1)
         val child = context.actorOf(props, name)
@@ -184,7 +184,7 @@ class DynamicRouteeSizer(nrActors: Int,
 class DynamicRouteeSizer2(nrActors: Int, props: Props, router: ActorRef) extends Actor {
   var nrChildren = nrActors
 
-  //restart children
+  // 자식을 재시작한다
   override def preStart(): Unit = {
     super.preStart()
     (0 until  nrChildren).map(nr => createRoutee())
@@ -202,7 +202,7 @@ class DynamicRouteeSizer2(nrActors: Int, props: Props, router: ActorRef) extends
     case PreferredSize(size) => {
       val currentNumber = context.children.size
       if (size < currentNumber) {
-        //remove
+        // 삭제하기
         println("Delete %d children".format(currentNumber - size))
         context.children.take(currentNumber - size).foreach(ref => {
           println("delete: "+ ref)

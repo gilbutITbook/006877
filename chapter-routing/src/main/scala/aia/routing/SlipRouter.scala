@@ -88,7 +88,7 @@ class SlipRouter(endStep: ActorRef) extends Actor with RouteSlip {
       Seq[ActorRef] = {
 
     val routeSlip = new ListBuffer[ActorRef]
-    //car needs a color
+    // 차에는 색이 필요하다
     if (!options.contains(CarOptions.CAR_COLOR_GRAY)) {
       routeSlip += paintBlack
     }
@@ -96,7 +96,7 @@ class SlipRouter(endStep: ActorRef) extends Actor with RouteSlip {
       case CarOptions.CAR_COLOR_GRAY  => routeSlip += paintGray
       case CarOptions.NAVIGATION      => routeSlip += addNavigation
       case CarOptions.PARKING_SENSORS => routeSlip += addParkingSensor
-      case other                      => //do nothing
+      case other                      => // 아무 것도 하지 않는다
     }
     routeSlip += endStep
     routeSlip
