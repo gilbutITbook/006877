@@ -37,7 +37,7 @@ object OrderServiceApp extends App
   val log =  Logging(system.eventStream, "order-service")
   bindingFuture.map { serverBinding =>
     log.info(s"Bound to ${serverBinding.localAddress} ")
-  }.onFailure { 
+  }.failed.foreach { 
     case ex: Exception =>
       log.error(ex, "Failed to bind to {}:{}!", host, port)
       system.terminate()
