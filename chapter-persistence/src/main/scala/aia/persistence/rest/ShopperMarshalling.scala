@@ -1,7 +1,5 @@
 package aia.persistence.rest
 
-import scala.util.Try
-
 import spray.json._
 
 import aia.persistence._

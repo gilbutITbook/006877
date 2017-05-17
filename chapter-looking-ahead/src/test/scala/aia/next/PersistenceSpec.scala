@@ -7,7 +7,6 @@ import com.typesafe.config._
 import scala.util._
 
 import akka.actor._
-import akka.persistence._
 import org.scalatest._
 
 import org.apache.commons.io.FileUtils

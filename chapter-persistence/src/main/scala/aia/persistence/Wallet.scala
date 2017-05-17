@@ -48,7 +48,7 @@ class Wallet(shopperId: Long, cash: BigDecimal) extends PersistentActor
   }
 
   private val updateState: (Event => Unit) = {
-    case paidItems @ Paid(items, _) => amountSpent = addSpending(items)
+    case Paid(items, _) => amountSpent = addSpending(items)
   }
 
   private def addSpending(items: List[Item]) =

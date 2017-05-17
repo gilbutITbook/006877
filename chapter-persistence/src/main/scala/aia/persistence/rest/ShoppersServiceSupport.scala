@@ -2,18 +2,14 @@ package aia.persistence.rest
 
 import com.typesafe.config.Config
 
-import scala.concurrent.duration._
 import scala.concurrent.Future
 
 import akka.actor._
 import akka.event.Logging
-import akka.io.IO
-import akka.pattern.ask
 import akka.util.Timeout
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
-import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 
 import aia.persistence._
@@ -36,7 +32,7 @@ trait ShoppersServiceSupport extends RequestTimeout {
     val log =  Logging(system.eventStream, "shoppers")
     bindingFuture.map { serverBinding =>
       log.info(s"Shoppers API bound to ${serverBinding.localAddress} ")
-    }.onFailure { 
+    }.failed.foreach { 
       case ex: Exception =>
         log.error(ex, "Failed to bind to {}:{}!", host, port)
         system.terminate()

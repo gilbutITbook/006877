@@ -1,11 +1,6 @@
 package aia.persistence
 
-import scala.concurrent.duration._
-
 import akka.actor._
-import akka.io.IO
-import akka.pattern.ask
-import akka.util.Timeout
 
 import aia.persistence.rest.ShoppersServiceSupport
 

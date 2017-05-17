@@ -6,7 +6,6 @@ import scala.concurrent.Await
 import akka.NotUsed
 import akka.actor._
 import akka.testkit._
-import org.scalatest._
 
 import akka.stream._
 import akka.stream.scaladsl._
@@ -26,7 +25,6 @@ class BasketQuerySpec extends PersistenceSpec(ActorSystem("test"))
 
   "Querying the journal for a basket" should {
     "return all basket events currently stored" in {
-      import system.dispatcher
       val basket = system.actorOf(Basket.props, Basket.name(shopperId))
       basket ! Basket.Add(macbookPro, shopperId)
       basket ! Basket.Add(displays, shopperId)

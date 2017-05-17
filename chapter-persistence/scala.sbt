@@ -1,11 +1,12 @@
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.2"
 
 scalacOptions ++= Seq(
   "-deprecation",
   "-unchecked",
   "-Xfatal-warnings",
-  "-Ywarn-unused",
   "-Ywarn-dead-code",
   "-feature",
-  "-language:_"
+  "-language:_",
+  "-Xlint:-unused,_",
+  "-Ywarn-unused:imports"
 )

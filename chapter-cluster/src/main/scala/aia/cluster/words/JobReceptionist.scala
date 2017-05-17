@@ -38,7 +38,7 @@ class JobReceptionist extends Actor
 
 
   def receive = {
-    case jr @ JobRequest(name, text) =>
+    case JobRequest(name, text) =>
       log.info(s"Received job $name")
 
       val masterName = "master-"+URLEncoder.encode(name, "UTF8")

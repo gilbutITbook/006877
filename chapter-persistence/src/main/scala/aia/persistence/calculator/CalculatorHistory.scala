@@ -1,7 +1,6 @@
 package aia.persistence.calculator
 
 import akka.actor._
-import akka.persistence._
 
 import akka.persistence.query.PersistenceQuery
 import akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
@@ -33,10 +32,10 @@ class CalculatorHistory extends Actor {
   var history = History()
   
   def receive = {
-    case event: Added => history = history.incrementAdded
-    case event: Subtracted => history = history.incrementSubtracted
-    case event: Divided => history = history.incrementDivided
-    case event: Multiplied => history = history.incrementMultiplied
+    case _ : Added => history = history.incrementAdded
+    case _ : Subtracted => history = history.incrementSubtracted
+    case _ : Divided => history = history.incrementDivided
+    case _ : Multiplied => history = history.incrementMultiplied
     case GetHistory => sender() ! history
   }
 }

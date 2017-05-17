@@ -1,7 +1,6 @@
 package aia.persistence
 
 import akka.actor._
-import akka.persistence._
 
 import akka.persistence.query.PersistenceQuery
 import akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
@@ -24,7 +23,6 @@ object PaymentHistory {
 
 class PaymentHistory(shopperId: Long) extends Actor
     with ActorLogging {
-  import Basket._
   import PaymentHistory._
 
   val queries = PersistenceQuery(context.system).readJournalFor[LeveldbReadJournal](

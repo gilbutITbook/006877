@@ -2,7 +2,6 @@ package aia.persistence.calculator
 
 import akka.actor._
 import akka.testkit._
-import org.scalatest._
 
 class CalculatorSpec extends PersistenceSpec(ActorSystem("test"))
     with PersistenceCleanup {

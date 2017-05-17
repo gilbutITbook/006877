@@ -51,7 +51,7 @@ class JobWorker extends Actor
       setReceiveTimeout(Duration.Undefined)
       become(retired(jobName))
 
-    case Terminated(master) =>
+    case Terminated(_) =>
       setReceiveTimeout(Duration.Undefined)
       log.error(s"Master terminated that ran Job ${jobName}, stopping self.")
       stop(self)
@@ -59,7 +59,7 @@ class JobWorker extends Actor
 
 
   def retired(jobName: String): Receive = {
-    case Terminated(master) =>
+    case Terminated(_) =>
       log.error(s"Master terminated that ran Job ${jobName}, stopping self.")
       stop(self)
     case _ => log.error("I'm retired.")

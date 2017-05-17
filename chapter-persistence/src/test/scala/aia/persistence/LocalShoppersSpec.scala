@@ -1,9 +1,7 @@
 package aia.persistence
 
-import scala.concurrent.duration._
 import akka.actor._
 import akka.testkit._
-import org.scalatest._
 
 class LocalShoppersSpec extends PersistenceSpec(ActorSystem("test"))
     with PersistenceCleanup {

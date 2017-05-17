@@ -1,10 +1,7 @@
 package aia.next
 
-import scala.concurrent.duration._
-
 import akka.actor._
 import akka.testkit._
-import org.scalatest._
 
 class BasketSpec extends PersistenceSpec(ActorSystem("test"))
     with PersistenceCleanup {
@@ -27,11 +24,10 @@ class BasketSpec extends PersistenceSpec(ActorSystem("test"))
 
     "return the items in a typesafe way" in {
       import akka.typed._
-      import akka.typed.ScalaDSL._
-      import akka.typed.AskPattern._
+      import akka.typed.scaladsl.AskPattern._
       import scala.concurrent.Future
       import scala.concurrent.duration._
-      import scala.concurrent.Await
+	  import scala.concurrent.Await
       
       implicit val timeout = akka.util.Timeout(1 second)
 
@@ -40,8 +36,14 @@ class BasketSpec extends PersistenceSpec(ActorSystem("test"))
       val displays =
         TypedBasket.Item("4K Display", 3, BigDecimal(2499.99))
 
+	  // TypedBasket.basketBehavior가 메서드로 변경됐기 때문에
+	  // ()를 붙여서 호출해 줘야 한다.
+	  // 예전의 deprecated된 DSL을 사용하는
+	  // val로 정의된 TypedBasket.basketBehavior를 
+	  // 사용하고 싶다면 basketBehavior()에서 ()를 
+	  // 없애면 된다.
       val sys: ActorSystem[TypedBasket.Command] =
-        ActorSystem("typed-basket", TypedBasket.basketBehavior)
+        ActorSystem("typed-basket", TypedBasket.basketBehavior())
       sys ! TypedBasket.Add(macbookPro, shopperId)
       sys ! TypedBasket.Add(displays, shopperId)
 

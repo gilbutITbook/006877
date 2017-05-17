@@ -1,10 +1,10 @@
-package aia.channels.enshahar
+package aia.persistence.enshahar
 
 // multi-jvm:test-only aia.channels.enshahar.AtLeastOnceDeliverySampleSpec으로 시작할것
 
 import org.scalatest.{WordSpecLike, BeforeAndAfterAll, MustMatchers}
 import akka.testkit.ImplicitSender
-import akka.actor.{Props, Actor, ActorSelection}
+import akka.actor.{Props, Actor, ActorSelection, ActorPath}
 import akka.persistence._
 
 /**
@@ -33,29 +33,37 @@ object AtLeastOnceDeliverySampleConfig extends MultiNodeConfig {
   testTransport(on = true)
 }
 
-class AtLeastOnceDeliverySampleSpecMultiJvmNode1 extends AtLeastOnceDeliverySample
-class AtLeastOnceDeliverySampleSpecMultiJvmNode2 extends AtLeastOnceDeliverySample
+class AtLeastOnceDeliverySampleSpecMultiJvmNode1 extends AtLeastOnceDeliverySample {
+  override val myid = "persistence-id1"
+}
+class AtLeastOnceDeliverySampleSpecMultiJvmNode2 extends AtLeastOnceDeliverySample {
+  override val myid = "persistence-id2"
+}
 
 import akka.remote.transport.ThrottlerTransportAdapter.Direction
 import scala.concurrent.duration._
 import concurrent.Await
 import akka.persistence.AtLeastOnceDelivery
 
-case class Msg(deliveryId: Long, s: String)
+case class Msg(deliveryId: Long, pathToOriginal: ActorPath, s: String)
 case class Confirm(deliveryId: Long)
  
 sealed trait Evt
-case class MsgSent(s: String) extends Evt
+case class MsgSent(s: String, pathToOriginal: ActorPath) extends Evt
 case class MsgConfirmed(deliveryId: Long) extends Evt
 
-class AtLeastOnceDeliveryActor(destination: ActorSelection)
+class AtLeastOnceDeliveryActor(destination: ActorSelection, id:String, pathToTester:ActorPath)
   extends PersistentActor with AtLeastOnceDelivery {
  
-  override def persistenceId: String = "persistence-id"
+  override val persistenceId: String = id
  
   override def receiveCommand: Receive = {
-    case s: String           => { print(s"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXstring received: $s"); persist(MsgSent(s))(updateState) }
+    case s: String           => persist(MsgSent(s,pathToTester))(updateState)
     case Confirm(deliveryId) => persist(MsgConfirmed(deliveryId))(updateState)
+	case Msg(deliveryId, pathToOrignal, s) => 
+      persist(MsgConfirmed(deliveryId))(updateState)
+      val orignalSender = context.actorSelection(pathToOrignal)
+      orignalSender ! s
   }
  
   override def receiveRecover: Receive = {
@@ -63,20 +71,22 @@ class AtLeastOnceDeliveryActor(destination: ActorSelection)
   }
  
   def updateState(evt: Evt): Unit = evt match {
-    case MsgSent(s) =>
-      deliver(destination)(deliveryId => Msg(deliveryId, s))
- 
+    case MsgSent(s,to) =>
+      deliver(destination)(deliveryId => Msg(deliveryId, to, s))
+
     case MsgConfirmed(deliveryId) => confirmDelivery(deliveryId)
   }
 }
 
-class AtLeastOnceDeliverySample
+abstract class AtLeastOnceDeliverySample
   extends MultiNodeSpec(AtLeastOnceDeliverySampleConfig)
   with STMultiNodeSpec
   with ImplicitSender {
-
+  
   import AtLeastOnceDeliverySampleConfig._
 
+  def myid: String
+  
   def initialParticipants = roles.size
 
   "A MultiNodeSample" must {
@@ -88,15 +98,16 @@ class AtLeastOnceDeliverySample
     "send to and receive from a remote node" in {
       runOn(client) {
         enterBarrier("deployed")
-        val pathToEcho = node(server) / "user" / "echoecho"
+        val pathToEcho = node(server) / "user" / "echo"
+        val pathToMe = node(client) / "user" / "echotester"
         val echo = system.actorSelection(pathToEcho)
-        val sender = system.actorOf(Props(new AtLeastOnceDeliveryActor(echo)))
-		
+        val sender = system.actorOf(Props(new AtLeastOnceDeliveryActor(echo, myid, pathToMe)), "echotester")
+        
         sender ! "message1"
         expectMsg("message1")
         Await.ready(
           testConductor.blackhole( client, server, Direction.Both),
-          1 second)
+          3 second)
 
         echo ! "DirectMessage"
         sender ! "ProxyMessage"
@@ -104,7 +115,7 @@ class AtLeastOnceDeliverySample
 
         Await.ready(
           testConductor.passThrough( client, server, Direction.Both),
-          1 second)
+          3 second)
 
         expectMsg("ProxyMessage")
 
@@ -113,16 +124,17 @@ class AtLeastOnceDeliverySample
       }
 
       runOn(server) {
-        system.actorOf(Props(new Actor {
+        val serverEcho = system.actorOf(Props(new Actor {
           def receive = {
-		    case Msg(deliveryId, s) =>
-			  sender() ! Confirm(deliveryId)
-			  sender() ! s
+            //case Msg(deliveryId, pathToOrignal, s) =>
+              //sender() ! Confirm(deliveryId)
+              //val orignalSender = system.actorSelection(pathToOrignal)
+              //orignalSender ! s
             case msg: AnyRef => {
               sender() ! msg
             }
           }
-        }), "echoecho")
+        }), "echo")
         enterBarrier("deployed")
       }
 

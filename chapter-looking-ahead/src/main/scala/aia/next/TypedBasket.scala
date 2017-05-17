@@ -1,11 +1,12 @@
 package aia.next
 
 import akka.typed._
-import akka.typed.ScalaDSL._
-import akka.typed.AskPattern._
-import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.concurrent.Await
+/* deprecated된 DSL 사용하는 경우 다음을 임포트해야 한다
+import akka.typed.ScalaDSL._ 
+*/
+
+// 아카 2.5에서 제안하는 대로 구현할 경우 필요한 import문
+import akka.typed.scaladsl.Actor._
 
 object TypedBasket {
   sealed trait Command {
@@ -20,6 +21,8 @@ object TypedBasket {
   case class Items(list: Vector[Item]= Vector.empty[Item])
   case class Item(productId: String, number: Int, unitPrice: BigDecimal)
 
+/* 
+  원래 책의 소스코드다. 아카 2.4.14에서 정상작동하며, 2.5에서는 deprecated된 기능을 사용한다.
   val basketBehavior =
   ContextAware[Command] { ctx ⇒
     var items = Items()
@@ -31,6 +34,16 @@ object TypedBasket {
         items = Items(items.list :+ item)
       //case GetItems =>
     }
-  }
+  }*/
+  def basketBehavior(items: Items = Items()): Behavior[Command] = 
+    Stateful[Command] { (ctx, msg) =>
+	  msg match {
+	    case GetItems(productId, replyTo) =>
+          replyTo ! items
+		  Same
+	    case Add(item, productId) =>
+          basketBehavior(Items(items.list :+ item))
+	  }
+	}
 }
 

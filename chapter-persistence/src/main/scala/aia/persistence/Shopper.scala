@@ -12,7 +12,7 @@ object Shopper {
   }
 
   case class PayBasket(shopperId: Long) extends Command
-  // for simplicity every shopper got 40k to spend.
+  // 단순화해서 모든 고객이 4만원을 쓰게 한다
   val cash = 40000
 }
 

@@ -4,7 +4,6 @@ package aia.next
 case class Items(list: List[Item]) {
   // more code for working with the item..
 
-  import Items._
   def add(newItem: Item) = Items.aggregate(list :+ newItem)
   def add(items: Items) = Items.aggregate(list ++ items.list)
 
