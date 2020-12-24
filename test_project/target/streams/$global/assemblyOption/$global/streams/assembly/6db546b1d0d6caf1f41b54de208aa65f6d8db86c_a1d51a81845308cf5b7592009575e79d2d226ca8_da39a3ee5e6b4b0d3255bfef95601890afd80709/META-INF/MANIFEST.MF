@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1492010858392
+Bundle-Description: akka-slf4j
+Bundle-DocURL: http://doc.akka.io/api/akka/2.5.0
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0;description=A
+ pache License, Version 2.0
+Bundle-ManifestVersion: 2
+Bundle-Name: akka-slf4j
+Bundle-SymbolicName: com.typesafe.akka.slf4j
+Bundle-Vendor: Lightbend Inc.
+Bundle-Version: 2.5.0
+Created-By: 1.8.0_121 (Oracle Corporation)
+Export-Package: akka.event.slf4j;uses:="akka.actor,akka.dispatch,akka.ev
+ ent,org.slf4j,scala,scala.reflect,scala.runtime";version="2.5.0"
+Import-Package: akka.actor;version="[2.5,2.6)",akka.dispatch;version="[2
+ .5,2.6)",akka.event;version="[2.5,2.6)",akka.util;version="[2.5,2.6)",s
+ cala;version="[2.12,2.13)",scala.collection;version="[2.12,2.13)",scala
+ .collection.immutable;version="[2.12,2.13)",scala.reflect;version="[2.1
+ 2,2.13)",scala.runtime;version="[2.12,2.13)",scala.runtime.java8;versio
+ n="[2.12,2.13)",org.slf4j;version="[1.7,2)"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-2.4.0.201411031534

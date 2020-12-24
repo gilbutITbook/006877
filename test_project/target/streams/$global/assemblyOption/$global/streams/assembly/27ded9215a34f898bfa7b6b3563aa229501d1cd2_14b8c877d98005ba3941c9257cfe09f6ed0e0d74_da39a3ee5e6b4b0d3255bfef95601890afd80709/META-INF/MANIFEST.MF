@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-Description: Reactive Streams API
+Export-Package: org.reactivestreams;version="1.0.0.release"
+Bundle-SymbolicName: org.reactivestreams.reactive-streams
+Bundle-Version: 1.0.0.release
+Bundle-Name: reactive-streams
+Bundle-ManifestVersion: 2
+Bnd-LastModified: 1424093440000
+Bundle-Vendor: Reactive Streams SIG
+Bundle-DocURL: http://reactive-streams.org
+Created-By: 1.8.0_31 (Oracle Corporation)
+Tool: Bnd-2.1.0.20130426-122213
+

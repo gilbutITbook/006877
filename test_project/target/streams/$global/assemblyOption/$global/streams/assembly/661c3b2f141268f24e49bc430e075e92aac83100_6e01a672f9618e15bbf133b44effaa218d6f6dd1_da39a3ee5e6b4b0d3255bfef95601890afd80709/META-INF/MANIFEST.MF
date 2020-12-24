@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1483006089703
+Bundle-ManifestVersion: 2
+Bundle-Name: io.spray.json
+Bundle-SymbolicName: io.spray.json
+Bundle-Version: 1.3.3
+Created-By: 1.8.0_111 (Oracle Corporation)
+Export-Package: spray.json;version="1.3.3";uses:="scala,scala.collection
+ ,scala.collection.immutable,scala.math,scala.reflect,scala.runtime,scal
+ a.util"
+Import-Package: scala;version="[2.12,2.13)",scala.collection;version="[2
+ .12,2.13)",scala.collection.generic;version="[2.12,2.13)",scala.collect
+ ion.immutable;version="[2.12,2.13)",scala.collection.mutable;version="[
+ 2.12,2.13)",scala.math;version="[2.12,2.13)",scala.reflect;version="[2.
+ 12,2.13)",scala.runtime;version="[2.12,2.13)",scala.runtime.java8;versi
+ on="[2.12,2.13)",scala.sys;version="[2.12,2.13)",scala.util;version="[2
+ .12,2.13)",scala.util.control;version="[2.12,2.13)",spray.json;version=
+ "1.3.3"
+Tool: Bnd-2.1.0.20130426-122213

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: akka-parsing
+Implementation-Version: 10.0.5
+Specification-Vendor: Lightbend
+Specification-Title: akka-parsing
+Implementation-Vendor-Id: com.typesafe.akka
+Specification-Version: 10.0.5
+Implementation-URL: http://akka.io
+Implementation-Vendor: Lightbend
+
